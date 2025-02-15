@@ -1,6 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import { JWT_ACCESS_TOKEN_EXPIRE_IN, JWT_ACCESS_TOKEN_SECRET, JWT_REFRESH_TOKEN_EXPIRE_IN, JWT_REFRESH_TOKEN_SECRET } from "../config/env.js";
 
 const userSchema = new Schema({
   username: {
@@ -25,13 +26,14 @@ const userSchema = new Schema({
   },
   avatar: {
     type: String,
+    required:true
   },
   coverImage: {
     type: String,
   },
   password: {
     type: String,
-    required: [true, "Password is required"],
+    required: true,
   },
   refreshToken: {
     type: String,
@@ -42,10 +44,9 @@ const userSchema = new Schema({
   },
 });
 
-userSchema.pre("save", (next) => {
-  if (!this.modified("password")) return next();
-
-  this.password = bcrypt.hash(this.password, 10);
+userSchema.pre("save", async function(next)  {
+  if(!this.isModified("password")) return next();
+  this.password = await bcrypt.hash(this.password, 10);
   next();
 });
 
@@ -58,8 +59,8 @@ userSchema.methods.generateAcessToken = function () {
     {
       _id: this._id,
     },
-    process.env.JWT_ACCESS_TOKEN_SECRET,
-    { expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRE_IN }
+    JWT_ACCESS_TOKEN_SECRET,
+    { expiresIn: JWT_ACCESS_TOKEN_EXPIRE_IN }
   );
 };
 
@@ -68,8 +69,8 @@ userSchema.methods.generateRefreshToken = function () {
       {
         _id: this._id,
       },
-      process.env.JWT_REFRESH_TOKEN_SECRET,
-      { expiresIn: process.env.JWT_REFRESH_TOKEN_EXPIRE_IN }
+      JWT_REFRESH_TOKEN_SECRET,
+      { expiresIn: JWT_REFRESH_TOKEN_EXPIRE_IN }
     );
   };
 

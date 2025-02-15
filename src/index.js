@@ -1,6 +1,7 @@
 import { app  } from "./app.js";
-import database from "./config/dbConnection.js";
 import { PORT } from "./config/env.js";
+import database from "./config/index.js";
+
 
 
 
