@@ -21,13 +21,14 @@ app.use(cookieParser())
 //import routes here
 import healthcheckRoute from "./routes/healthcheck.route.js"
 import userRoute from "./routes/user.route.js"
-
+import subscriptionRoute from "./routes/subscription.route.js"
 
 
 
 //usedHere
 app.use("/api/healthcheck",healthcheckRoute)
 app.use("/api/user",userRoute)
+app.use("/api/subscription",subscriptionRoute)
 
 
 //Error Handler

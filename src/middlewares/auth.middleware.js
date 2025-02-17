@@ -4,7 +4,7 @@ import {JWT_ACCESS_TOKEN_SECRET} from "../config/env.js"
 import {User} from "../models/user.model.js"
 import jwt from "jsonwebtoken"
 const verifyJwt=asyncHandler(async(req,res,next)=>{
-    const accessToken=req.cookies.accessToken || req.headers("Authorization")?.replace("Bearer ","")
+    const accessToken=req.cookies.accessToken || req.header("Authorization")?.replace("Bearer ","")
 
     if(!accessToken){
         throw new ApiError(401,"unauthorized request")
