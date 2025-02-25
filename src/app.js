@@ -23,13 +23,14 @@ import healthcheckRoute from "./routes/healthcheck.route.js"
 import userRoute from "./routes/user.route.js"
 import subscriptionRoute from "./routes/subscription.route.js"
 import videoRoute from "./routes/video.route.js"
-
+import tweetRoute from "./routes/tweet.route.js"
 
 //usedHere
 app.use("/api/healthcheck",healthcheckRoute)
 app.use("/api/user",userRoute)
 app.use("/api/subscription",subscriptionRoute)
 app.use("/api/video",videoRoute)
+app.use("/api/tweet",tweetRoute)
 
 
 //Error Handler
