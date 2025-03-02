@@ -25,6 +25,7 @@ import subscriptionRoute from "./routes/subscription.route.js"
 import videoRoute from "./routes/video.route.js"
 import tweetRoute from "./routes/tweet.route.js"
 import playlistRoute from "./routes/playlist.route.js"
+import commentRoute from "./routes/comment.routes.js"
 
 //usedHere
 app.use("/api/healthcheck",healthcheckRoute)
@@ -33,6 +34,8 @@ app.use("/api/subscription",subscriptionRoute)
 app.use("/api/video",videoRoute)
 app.use("/api/tweet",tweetRoute)
 app.use("/api/playlist",playlistRoute)
+app.use("/api/comment",commentRoute)
+
 
 //Error Handler
 app.use(errorHandler)
