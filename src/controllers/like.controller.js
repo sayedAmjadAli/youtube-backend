@@ -172,6 +172,20 @@ const getLikedVideos = asyncHandler(async (req, res) => {
                         }
                     ]
                 }
+            },
+            {
+                $addFields:{
+                    video:{
+                        $first:"$videos"
+                    }
+                }
+            },
+            {
+                $project:{
+                    _id:1,
+                    video:1,
+                    likedBy:1
+                }
             }
         ]
      )
