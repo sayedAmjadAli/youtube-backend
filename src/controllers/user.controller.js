@@ -40,8 +40,8 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(400, "All Fields are require");
   }
 
-  const avatarLocalPath = req.files?.avatar[0]?.path;
-  const coverImageLocalPath = req.files?.coverImage[0]?.path;
+  const avatarLocalPath = req?.files?.avatar[0]?.path;
+  const coverImageLocalPath = req?.files?.coverImage[0]?.path;
 
   if (!avatarLocalPath) {
     throw new ApiError(400, "avatar is required");
@@ -169,7 +169,8 @@ const logout = asyncHandler(async (req, res) => {
 });
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
-  const refreshToken = req.cookie.refreshToken || req.body;
+  console.log("RefreshToken")
+  const refreshToken = req?.cookies?.refreshToken || req.body;
 
   if (!refreshToken) {
     throw new ApiError(401, "Unauthrozied request");
@@ -276,7 +277,7 @@ const watchHistory = asyncHandler(async (req, res) => {
   const history = await User.aggregate([
     {
       $match: {
-        _id: mongoose.Types.ObjectId(req.user._id),
+        _id: new mongoose.Types.ObjectId(req.user._id),
       },
     },
     {

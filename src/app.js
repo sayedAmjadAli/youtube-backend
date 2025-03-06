@@ -27,7 +27,7 @@ import tweetRoute from "./routes/tweet.route.js"
 import playlistRoute from "./routes/playlist.route.js"
 import commentRoute from "./routes/comment.route.js"
 import likeRoute from "./routes/like.route.js"
-
+import dashboardRoute from "./routes/dashboard.route.js"
 //usedHere
 app.use("/api/healthcheck",healthcheckRoute)
 app.use("/api/user",userRoute)
@@ -37,6 +37,7 @@ app.use("/api/tweet",tweetRoute)
 app.use("/api/playlist",playlistRoute)
 app.use("/api/comment",commentRoute)
 app.use("/api/like",likeRoute)
+app.use("/api/dashboard",dashboardRoute)
 
 
 //Error Handler
