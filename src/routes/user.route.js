@@ -10,6 +10,8 @@ import {
   updateAvatar,
   updateCoverImage,
   updateUserDetails,
+  verifyEmail,
+  verifyEmailRequest,
   watchHistory,
 } from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.js";
@@ -45,5 +47,8 @@ router.route("/history").get(verifyJwt, watchHistory);
 router
   .route("/changeCurrentUserPassword")
   .patch(verifyJwt, changeCurrentUserPassword);
+
+router.route("/verifyEmailRequest").post(verifyEmailRequest)
+router.route("/verifyEmail").post(verifyEmail)
 
 export default router;

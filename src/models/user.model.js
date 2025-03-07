@@ -26,7 +26,7 @@ const userSchema = new Schema({
   },
   avatar: {
     type: String,
-    required:true
+    required: true
   },
   coverImage: {
     type: String,
@@ -42,10 +42,18 @@ const userSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "Video",
   },
+  isVerified: {
+    type: Boolean,
+    default: false
+  },
+  forgetPasswordToken: String,
+  forgetPasswordTokenExpiry: Date,
+  verifyToken: String,
+  verifyTokenExpiry: Date
 });
 
-userSchema.pre("save", async function(next)  {
-  if(!this.isModified("password")) return next();
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
   this.password = await bcrypt.hash(this.password, 10);
   next();
 });
@@ -65,13 +73,13 @@ userSchema.methods.generateAcessToken = function () {
 };
 
 userSchema.methods.generateRefreshToken = function () {
-   return jwt.sign(
-      {
-        _id: this._id,
-      },
-      JWT_REFRESH_TOKEN_SECRET,
-      { expiresIn: JWT_REFRESH_TOKEN_EXPIRE_IN }
-    );
-  };
+  return jwt.sign(
+    {
+      _id: this._id,
+    },
+    JWT_REFRESH_TOKEN_SECRET,
+    { expiresIn: JWT_REFRESH_TOKEN_EXPIRE_IN }
+  );
+};
 
 export const User = mongoose.model("User", userSchema);

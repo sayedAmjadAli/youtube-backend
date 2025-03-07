@@ -3,6 +3,8 @@ import { ApiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { User } from "../models/user.model.js";
 import jwt from "jsonwebtoken";
+import { sendEmail } from "../utils/sendmail.js";
+
 import {
   deleteResourseFromCloudinary,
   uploadOnCloudinary,
@@ -116,6 +118,9 @@ const login = asyncHandler(async (req, res) => {
       throw new ApiError(400, "email or password is wrong");
     }
 
+      if(!user.isVerified){
+        throw new ApiError(400, "Your account is not verified");
+      }
     const checkPassword = await user.isCorrectPassword(password);
 
     if (!checkPassword) {
@@ -147,7 +152,7 @@ const login = asyncHandler(async (req, res) => {
         )
       );
   } catch (error) {
-    throw new ApiError(500, "Error occur while login to user", error.message);
+    throw new ApiError(500, error.message );
   }
 });
 
@@ -210,7 +215,6 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
   } catch (error) {
     throw new ApiError(
       500,
-      "Error occur while refreshing accessToken",
       error.message
     );
   }
@@ -399,7 +403,7 @@ const updateCoverImage=asyncHandler(async(req,res)=>{
   try {
     cloudinaryCoverImage=await uploadOnCloudinary(localPath)
   } catch (error) {
-    throw new ApiError(400,"Error occur while uploading coverImage",error.message)
+    throw new ApiError(400,error.message)
   }
   
   const updatedUser=await User.findOneAndUpdate(
@@ -419,6 +423,53 @@ const updateCoverImage=asyncHandler(async(req,res)=>{
   
 })
 
+
+const verifyEmailRequest=asyncHandler(async(req,res)=>{
+  const {email}=req.body
+  if(!email && email===""){
+    throw new ApiError(400,"Please provide email")
+  }
+  try {
+    const user=await User.findOne({email})
+    
+    if(!user){
+      throw new ApiError(400,"provided email does not exists")
+    }
+
+  const mailResponse=await sendEmail({email,emailType:"VERIFY",userId:user._id})  
+
+  return res.status(200).json(new ApiResponse(200,{},"Successfully sent verify link to your email"))
+  } catch (error) {
+    throw new ApiError(400,error.message)
+  }
+})
+
+const verifyEmail=asyncHandler(async(req,res)=>{
+  const {token}=req.body
+  
+  if(!token && token===""){
+    throw new ApiError(400,"Provide verification Token")
+    }
+
+  try {
+   const user=await User.findOne({verifyToken:token,verifyTokenExpiry:{$gt:Date.now()}})
+ 
+  if(!user){
+    throw new ApiError(400,"Invalid Token or Token Expire")
+  }
+
+  user.isVerified=true
+  user.verifyToken=null,
+  user.verifyTokenExpiry=null
+
+  user.save()
+
+
+ res.status(200).json(new ApiResponse(200,{},"Successfully verify user")) 
+  } catch (error) {
+    throw new ApiError(400,error.message)
+  }
+})
 export {
   registerUser,
   login,
@@ -430,5 +481,7 @@ export {
   updateAvatar,
   updateCoverImage,
   updateUserDetails,
-  changeCurrentUserPassword
+  changeCurrentUserPassword,
+  verifyEmailRequest,
+  verifyEmail
 };
