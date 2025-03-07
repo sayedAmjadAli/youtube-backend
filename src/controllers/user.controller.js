@@ -85,6 +85,8 @@ const registerUser = asyncHandler(async (req, res) => {
     if (!user) {
       throw new ApiError(500, "Error Occur while creating User");
     }
+    const mailResponse=await sendEmail({email,emailType:"VERIFY",userId:user._id})
+    
     res
       .status(201)
       .json(new ApiResponse(201, user, "Successfully created user"));
